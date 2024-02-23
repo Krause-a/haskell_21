@@ -35,6 +35,7 @@ _bitCriteria :: Int -> Bool -> [[Int]] -> [[Int]]
 _bitCriteria _ _ [x] = [x]
 _bitCriteria index wantCommon xs = let
     groups = groupBy (\x y -> ((x!!index) == (y!!index))) (sortBy (compare `on` (!!index)) xs)
+    -- groups = groupBy (==) `on` (!!index) (sortBy (compare `on` (!!index)) xs)
     sortedGroups = sortBy (compare `on` (\x -> ((head x)!!index) == commonBit)) groups
     matches = --trace ("Want Common: " ++ show wantCommon ++ " Common: " ++ show commonBit ++ " Index: " ++ show index ++ " Sorted: " ++ show sortedGroups)
         sortedGroups !! if wantCommon then 1 else 0
