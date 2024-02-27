@@ -10,10 +10,10 @@ solve :: String -> String
 solve s = solve_day_part_1 s ++ "\n" ++ solve_day_part_2 s
 
 solve_day_part_1 :: String -> String
-solve_day_part_1 = show . foldr (\x acc -> if x > 1 then 1 + acc else acc) 0 . intoMap . map (makeLine' . parseLine) . splitAll '\n'
+solve_day_part_1 = show . foldr (\x acc -> if x > 1 then 1 + acc else acc) 0 . intoMap . map (makeLine' CardinalOnly . parseLine) . splitAll '\n'
 
 solve_day_part_2 :: String -> String
-solve_day_part_2 = show . foldr (\x acc -> if x > 1 then 1 + acc else acc) 0 . intoMap . map (makeLine' . parseLine) . splitAll '\n'
+solve_day_part_2 = show . foldr (\x acc -> if x > 1 then 1 + acc else acc) 0 . intoMap . map (makeLine' IncludeOrdinal . parseLine) . splitAll '\n'
 
 intoMap :: [[Point]] -> Map.Map Point Int
 intoMap lines = let
@@ -32,16 +32,17 @@ parseLine s = let
         parsePoint s = case (toIntList . splitAll ',') s of
             [x, y] -> (x, y)
 
+data Cardinals = CardinalOnly | IncludeOrdinal deriving (Show, Eq)
 
-makeLine :: Point -> Point -> [Point]
-makeLine' (p0, p1) = makeLine p0 p1
-makeLine (x0, y0) (x1, y1)
-    | x0 /= x1 && y0 /= y1 = []
+makeLine :: Cardinals -> Point -> Point -> [Point]
+makeLine' card (p0, p1) = makeLine card p0 p1
+makeLine card (x0, y0) (x1, y1)
+    | x0 /= x1 && y0 /= y1 && card == CardinalOnly = []
     | x0 == x1 && y0 == y1 = [(x0, y0)]
     | otherwise = let
         yInc = getInc y0 y1
         xInc = getInc x0 x1
-        in makeLine (xInc x0, yInc y0) (x1, y1) ++ [(x0, y0)]
+        in makeLine card (xInc x0, yInc y0) (x1, y1) ++ [(x0, y0)]
     where
         getInc :: Int -> Int -> Int -> Int
         getInc a b = case compare a b of
