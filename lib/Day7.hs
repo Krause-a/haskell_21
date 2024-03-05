@@ -1,6 +1,6 @@
 module Day7 (solve) where
 import Common (toIntList, splitAll)
-import Data.List (maximumBy, group, sort)
+import Data.List (maximumBy, minimumBy, group, sort)
 import Data.Function (on)
 import Debug.Trace (trace)
 
@@ -15,7 +15,11 @@ solve_day_part_1 s = let
     in show sumDiff
 
 solve_day_part_2 :: String -> String
-solve_day_part_2 = const "Part Two"
+solve_day_part_2 s = let
+    nums = toIntList $ splitAll ',' s
+    m = maximum nums
+    pairs = pairResultsToIndex m nums
+    in show $  minimumBy (compare `on` snd) pairs
 
 
 mode :: [Int] -> Int
@@ -26,3 +30,13 @@ median xs = sort xs !! mid
     where
         len = length xs - 1
         mid = len `div` 2
+
+nSum :: Int -> Int
+nSum x = (x * (x + 1)) `div` 2
+
+pairResultsToIndex :: Int -> [Int] -> [(Int, Int)]
+pairResultsToIndex index list
+    | index == 1 = []
+    | otherwise = (index, getCost list) : pairResultsToIndex (pred index) list
+    where
+        getCost = foldr (\x acc -> acc + nSum (abs (index - x))) 0
