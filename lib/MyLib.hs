@@ -7,6 +7,7 @@ import qualified Day5
 import qualified Day6
 import qualified Day7
 import qualified Day8
+import qualified Day9
 
 daySelector :: Int -> String -> String
 daySelector d | d == 1 = Day1.solve
@@ -17,5 +18,6 @@ daySelector d | d == 1 = Day1.solve
               | d == 6 = Day6.solve
               | d == 7 = Day7.solve
               | d == 8 = Day8.solve
+              | d == 9 = Day9.solve
               | otherwise = ("OTHERWISE"++) . (++"OTHERWISE")
 
